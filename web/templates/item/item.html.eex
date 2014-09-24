@@ -1,0 +1,118 @@
+<div class="page-header">
+  <h2>`<%= @item.name %>` @ <%= @item.path %></h2>
+</div>
+
+<h4>Origin <i><%= @item.origin || "unknown" %></i></h4>
+
+<h2 class="sub-header">Build calls</h2>
+<div id="calls">
+  <%= if [] == @item.builds do %>
+  <div id="cmdCallAlert" class="alert alert-info">
+    No calls done :/
+  </div>
+	<%= else %>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>ID</th>
+				<th>Command</th>
+				<th>Started</th>
+				<th>Last update</th>
+				<th>Status</th>
+			</tr>
+			</thead>
+			<tbody>
+			<%= for call <- @item.builds do %>
+				<tr>
+					<td><a href="/logs/<%= @item.name %>/<%= call.id %>"><tt><%= String.slice(call.id, 0, 10) %></tt></a></td>
+					<td><tt><%= call.command %></tt></td>
+					<td><tt class="fuzzmydate"><%= format_date_time call.ctime %></tt></td>
+					<td><tt class="fuzzmydate"><%= format_date_time call.mtime %></tt></td>
+					<td>
+						<%= case call.status do %>
+							<%= 0 -> %> <span class="label label-success">Done!!!</span>
+							<%= -1 -> %> <span class="label label-info">Not there yet</span>
+							<%= _ -> %> <span class="label label-danger">Error: <%= call.status %></span>
+						<%= end %>
+					</td>
+				</tr>
+			<%= end %>
+			</tbody>
+		</table>
+  <%= end %>
+
+<form id="doCmdForm">
+  <div class="form-group">
+    <label for="cmdCall">Command</label>
+    <div class="input-group btn-group col-xs-6">
+      <span class="input-group-addon">&nbsp;</span>
+      <span class="col-xs-8" style="padding:0px">
+        <input type="text" name="call" class="col-xs-2 form-control" id="cmdCall" placeholder="Enter cmd call..." />
+      </span>
+      <button data-item="<%= @item.name %>" type="button" id="doCmdCall" class="col-xs-2 btn btn-primary">Do!</button>
+    </div>
+  </div>
+</form>
+
+</div>
+
+<h2 class="sub-header">Commits</h2>
+<div>
+  <%= for commit <- @item.commits do %>
+    <li><code><%= commit %></code></li>
+  <%= end %>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+
+		var fuzzyDate = function(time){
+			var date = new Date((time || "")),
+				diff = (((new Date()).getTime() - date.getTime()) / 1000),
+				day_diff = Math.max(Math.floor(diff / 86400), 0);
+
+			console.log(date, diff, day_diff);
+
+			if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 ) {
+				return undefined;
+			}
+
+			return day_diff === 0 && (
+					diff < 60 && "just now" ||
+					diff < 240 && "few minutes ago" ||
+					diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+					diff < 7200 && "1 hour ago" ||
+					diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+				day_diff === 1 && "Yesterday" ||
+				day_diff < 7 && day_diff + " days ago" ||
+				day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago" ||
+				day_diff < 365 && Math.ceil( day_diff / 31 ) + " months ago" ||
+				day_diff > 365 && Math.ceil( day_diff / 365 ) + " years ago";
+		};
+
+		$('.fuzzmydate').each(function(k, elem) {
+			//elem.innerText = fuzzyDate(elem.innerText);
+			var x = fuzzyDate(elem.innerText);
+			if (x)
+				elem.innerText = x;
+		});
+
+    $("button#doCmdCall").click(function() {
+      $.ajax({
+        type: "POST",
+        contentType: "text/plain",
+        url: "/build/" + $(this).data('item'),
+		data: $("#cmdCall").val(),
+        success: function(resp) {
+			location.reload();
+        },
+        error: function(err) {
+            $('#cmdCallAlert').remove();
+            var text = 'unknown error, status code: ' + err.statusText + "<pre>" + err.responseText + "</pre>";
+            $('<div id="cmdCallAlert" class="alert alert-danger"><b>Error:</b> ' + text + '</div>')
+              .prependTo('#calls');
+        }
+      });
+    });
+  });
+</script>

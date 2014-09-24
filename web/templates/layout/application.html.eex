@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Vestige</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $.fn.serializeObject = function(){
+         var o = {};
+         var a = this.serializeArray();
+         $.each(a, function() {
+             if (o[this.name]) {
+                 if (!o[this.name].push) {
+                     o[this.name] = [o[this.name]];
+                 }
+                 o[this.name].push(this.value || '');
+             } else {
+                 o[this.name] = this.value || '';
+             }
+         });
+         return o;
+      };
+    </script>
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Vestige</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/">Dashboard</a></li>
+            <li><a href="/">Items</a>
+              <ul id="itemsSidebar">
+                <%= for item <- Vestige.Items.get do %>
+                  <li><a href="/item/<%= item.name %>"><%= item.name %></a></li>
+                <%= end %>
+              </ul>
+
+              <hr />
+              <div>
+                <button class="btn btn-primary col-sm-offset-1 col-xs-offset-1"
+                        data-toggle="modal"
+                        data-target="#addItemModal">
+                  <span class="glyphicon glyphicon-plus"></span> Add item
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <%= @inner %>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade"
+         id="addItemModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addItemModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">Import item</h4>
+            </div>
+            <div class="modal-body">
+              <form role="form" id="addItemForm">
+                <div class="form-group">
+                  <label for="itemName">Item Name</label>
+                  <input type="text" name="name" class="form-control" id="itemName" placeholder="Enter name">
+                </div>
+
+                <div class="form-group">
+                  <label for="itemOrigin">Item Origin</label>
+                  <input type="text" name="origin" class="form-control" id="itemOrigin" placeholder="Enter origin (git clone path)">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="addItemSubmit">Add Item</button>
+            </div>
+        </div>
+
+        <script>
+          $(function() {
+            $("button#addItemSubmit").click(function() {
+              $.ajax({
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                url: "/item",
+                data: JSON.stringify($('form#addItemForm').serializeObject() ),
+                success: function(resp) {
+                  $("#addItemModal").modal('hide');
+                  $("<li><a href=\"/item/" + resp.name + "\">" + resp.name + "</a></li>").appendTo("#itemsSidebar");
+                },
+                error: function(err) {
+                  console.log(err);
+                  $('#addItemAlert').remove();
+                  if (err.responseJSON) {
+                    $('<div id="addItemAlert" class="alert alert-danger"><b>Error:</b> ' + err.responseJSON.error + '</div>')
+                      .prependTo('#addItemModal .modal-body');
+                  } else {
+                    var text = 'unknown error, status code: ' + err.statusText + "<pre>" + err.responseText + "</pre>";
+
+                    $('<div id="addItemAlert" class="alert alert-danger"><b>Error:</b> ' + text + '</div>')
+                      .prependTo('#addItemModal .modal-body');
+                  }
+                },
+              });
+            });
+          });
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

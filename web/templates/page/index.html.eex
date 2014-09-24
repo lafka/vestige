@@ -1,0 +1,25 @@
+<div>
+    <div class="page-header">
+      <h2>Welcome to Vestige</h4>
+    </div>
+
+    <p class="lead">
+      Vestig helps you build stuff by providing an API to call `mix` tasks on
+      a project and returning some results.
+    </p>
+
+    <p class="lead">
+      Some use cases include:
+      <ul>
+        <li>Run tests as part of CI chain</li>
+        <li>Make artifacts from an API</li>
+      </ul>
+    </p>
+
+    <h3 class="sub-header">Getting started</h3>
+    <p>
+        <li>Item's can be added from the menu on the left side</li>
+        <li>Item's can also be loaded by calling <code>POST host/item</code></li>
+        <li>Execute tasks by calling <code>POST host>/mix/:item/:task</code>
+    </p>
+</div>
