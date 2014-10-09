@@ -20,6 +20,11 @@
     <p>
         <li>Item's can be added from the menu on the left side</li>
         <li>Item's can also be loaded by calling <code>POST host/item</code></li>
-        <li>Execute tasks by calling <code>POST host>/mix/:item/:task</code>
+        <li>Execute tasks by calling <code>POST <host>/mix/:item/:task</code>
     </p>
+
+	<h3 class="sub-header">SSH Authentication</h3>
+	<p>
+		Your public key: <code><pre><%= @key %></pre></code>
+	</p>
 </div>

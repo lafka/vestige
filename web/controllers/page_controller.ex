@@ -2,7 +2,8 @@ defmodule Vestige.PageController do
   use Phoenix.Controller
 
   def index(conn, _params) do
-    render conn, "index"
+    key = File.read! Application.get_env(:vestige, :key)
+    render conn, "index", %{key: key}
   end
 
   def not_found(conn, _params) do
