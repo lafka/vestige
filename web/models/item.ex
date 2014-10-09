@@ -58,7 +58,8 @@ defmodule Vestige.Item do
   end
 
   defp fill_commit_log(item) do
-    {buf, 0} = System.cmd "git", ["log", "--pretty=oneline"], [cd: item.path]
+    cmd = :os.find_executable('git') |> List.to_string
+    {buf, 0} = System.cmd cmd, ["log", "--pretty=oneline"], [cd: item.path]
     buf = String.strip buf, ?\n
 
     %{item | commits: String.split(buf, "\n")}
