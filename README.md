@@ -8,7 +8,7 @@ maybe with some logs.
 
 ```
 # For development, will open up on http://localhost:4000
-mix do deps.get, phoenix.start
+mix do deps.get && iex -S mix
 ```
 
 ## Create a release for local testing

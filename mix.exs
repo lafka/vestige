@@ -24,7 +24,7 @@ defmodule Vestige.Mixfile do
   # To specify particular versions, regardless of the tag, do:
   # { :barbat, "~> 0.1", github: "elixir-lang/barbat" }
   defp deps do
-    [ {:exrm, "~> 0.14.3"},
+    [ {:exrm, "~> 0.14.7"},
       {:phoenix, "0.4.1"},
       {:cowboy, "~> 1.0.0"}
     ]
