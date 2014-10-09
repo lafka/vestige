@@ -10,7 +10,7 @@ use Mix.Config
 # for the key and cert
 
 config :phoenix, Vestige.Router,
-  port: System.get_env("PORT") || 8181,
+  port: System.get_env("PORT") || 80,
   ssl: false,
   host: "vestige",
   cookies: false
