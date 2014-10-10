@@ -12,7 +12,7 @@ use Mix.Config
 config :phoenix, Vestige.Router,
   port: System.get_env("PORT") || 80,
   ssl: false,
-  host: "vestige",
+  host: "vestige.service.consul",
   cookies: false
 
 config :logger, :console,

@@ -37,7 +37,8 @@ defmodule Vestige.ItemController do
   reference (branch,tag etc) and the remote source
   """
   def fetch(conn, params) do
-    item = Vestige.Item.from_path params["item"]
+    item = Vestige.Item.load %Vestige.Item{name: params["item"],
+                                           origin: params["origin"]}
     opts = [stderr_to_stdout: true, cd: item.path]
 
     if params["origin"] do

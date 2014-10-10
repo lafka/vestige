@@ -16,8 +16,7 @@ defmodule Vestige.Item do
     from_path name
   end
   def from_path(name) do
-    path = :filename.join [storage_path, @subdir, name]
-
+    path = :filename.join([storage_path, @subdir, name])
     %Item{name: name, path: path}
       |> fill_origin
       |> fill_commit_log
@@ -34,7 +33,7 @@ defmodule Vestige.Item do
       case System.cmd("git", ["clone", "--bare", item.origin, item.path]) do
         {_, 0} ->
           File.mkdir_p! pathsub item.path, @builddir
-          {:ok, item}
+          {:ok, from_path(item.name)}
 
         {_, err} ->
           {:error, "can't clone: #{item.origin}"}

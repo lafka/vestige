@@ -21,6 +21,7 @@ defmodule Vestige do
   defp create_workdir do
     path = Application.get_env(:vestige, :storage_path)
     File.mkdir_p! path
+    File.mkdir_p! Path.join(path, "items")
   end
 
   defp maybe_create_sshkey do
@@ -30,12 +31,12 @@ defmodule Vestige do
     else
       path = Path.join [Application.get_env(:vestige, :storage_path), ".ssh", "id_rsa"]
 
-      if File.exists? path do
-        path
-      else
+      unless File.exists? path do
         File.mkdir_p! Path.dirname path
         System.cmd "ssh-keygen", ["-f", path, "-N", ""]
       end
+
+      path <> ".pub"
     end
   end
 end

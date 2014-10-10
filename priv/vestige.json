@@ -1,0 +1,7 @@
+{ "service": {
+                "name": "vestige",
+                "tags": [],
+                "port": 80
+	}
+}
+
