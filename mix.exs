@@ -45,7 +45,11 @@ defmodule Vestige.Mixfile do
     Mix.shell.info "Building docker release #{tag}"
     :ok = Mix.Task.run "release"
 
-    env = [{"DOCKER_HOST", System.get_env("DOCKER_HOST")}]
+    env = case System.get_env("DOCKER_HOST") do
+      nil -> []
+      host -> [{"DOCKER_HOST", host}]
+    end
+
     case System.cmd "docker", ["build", "-t", tag, "."], [{:env, env}] do
       {_, 0} ->
         Mix.shell.info "ok: #{tag}"
