@@ -25,18 +25,13 @@ defmodule Vestige do
   end
 
   defp maybe_create_sshkey do
-    path = Path.expand "~/.ssh/id_rsa.pub"
-    if File.exists? Path.expand path do
-      path
-    else
-      path = Path.join [Application.get_env(:vestige, :storage_path), ".ssh", "id_rsa"]
+    path = Path.expand "~/.ssh/id_rsa"
 
-      unless File.exists? path do
-        File.mkdir_p! Path.dirname path
-        System.cmd "ssh-keygen", ["-f", path, "-N", ""]
-      end
-
-      path <> ".pub"
+    unless File.exists?(path <> ".pub") do
+      File.mkdir_p! Path.dirname path
+      System.cmd "ssh-keygen", ["-f", path, "-N", ""]
     end
+
+    path <> ".pub"
   end
 end
