@@ -9,6 +9,9 @@ RUN apt-get update &&  apt-get install -y --no-install-recommends \
 
 # Release must be compiled in a intermediate build container
 ADD ./rel/vestige /app/vestige
+ADD ./bin/build-docker.sh app/vestige/bin
+ADD ./bin/build-mix.sh app/vestige/bin
+
 RUN chgrp -R daemon /app
 
 # Setup consul

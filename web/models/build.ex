@@ -32,10 +32,12 @@ defmodule Vestige.Build do
     stash build
 
 
+    path = String.to_char_list Path.join(System.cwd, "bin") <> ":" <> System.get_env "PATH"
     port = Port.open({:spawn_executable, bin},
-                     [:stream, :binary, {:args, ["-c", command]},
+                     [:stream, :binary, IO.inspect({:args, ["-c",
+"exec " <> command]}),
                       :use_stdio, :stderr_to_stdout, :exit_status,
-                      {:cd, buildpath}])
+                      {:cd, buildpath}, {:env, [{'PATH', path}]}])
 
     {:ok, %{build | port: port}}
   end
