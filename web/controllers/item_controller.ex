@@ -48,13 +48,11 @@ defmodule Vestige.ItemController do
     end
 
     case System.cmd "git", ["fetch", "origin"], opts do
-      {_, 0} ->
-        case System.cmd "git", ["checkout", "origin", params["branch"] || "master"], opts do
-          {_, 0} -> text conn, 204, ""
-          {err, _} -> text conn, 500, err
-        end
+      {_, 0} = res ->
+        text conn, 204, ""
 
-      {err, _} -> text conn, 500, err
+      {err, _} ->
+        text conn, 500, err
     end
   end
 
