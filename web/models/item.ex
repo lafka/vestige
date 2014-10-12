@@ -28,7 +28,7 @@ defmodule Vestige.Item do
   end
   def load(%Item{} = item) do
     if File.dir? item.path do
-      from_path item.path
+      {:ok, from_path item.path}
     else
       case System.cmd("git", ["clone", "--bare", item.origin, item.path]) do
         {_, 0} ->
