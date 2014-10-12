@@ -1,4 +1,4 @@
-FROM dock:5000/debian:base
+FROM dock:5000/elixir-build
 MAINTAINER Olav Frengstad <olav@tiny-mesh.com>
 
 RUN apt-get update &&  apt-get install -y --no-install-recommends openssl git openssh-client
