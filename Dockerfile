@@ -1,7 +1,11 @@
 FROM dock:5000/elixir-build
 MAINTAINER Olav Frengstad <olav@tiny-mesh.com>
 
-RUN apt-get update &&  apt-get install -y --no-install-recommends openssl git openssh-client
+RUN apt-get update &&  apt-get install -y --no-install-recommends \
+	openssl \
+	git \
+	openssh-client \
+	docker
 
 # Release must be compiled in a intermediate build container
 ADD ./rel/vestige /app/vestige
