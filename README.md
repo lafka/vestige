@@ -1,5 +1,7 @@
 # Vestige
 
+**Deprecated**: It works, but needs alot more love to become usable. Shell scripts FTW!
+
 Vestige builds shit. It's core purpose is to take a copy of a
 repository, run some command in the copy and return a `OK/NOT-OK` status;
 maybe with some logs.
